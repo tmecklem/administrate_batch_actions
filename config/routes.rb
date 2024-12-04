@@ -1,29 +1,31 @@
 Rails.application.routes.draw do
 
-  def controllers_for(path)
-    path ||= Rails.root.join('app', 'controllers', 'admin', '**/*.rb')
+  # Manually add the actions in the router instead of this magic that doesn't work
 
-    Dir[path].each do |file|
-      require_dependency file
-    end
+  # def controllers_for(path)
+  #   path ||= Rails.root.join('app', 'controllers', 'admin', '**/*.rb')
 
-    ::Administrate::ApplicationController.descendants
-  end
+  #   Dir[path].each do |file|
+  #     require_dependency file
+  #   end
 
-  namespace :admin do
-    controllers_for(nil).each do |controller|
-      controller
-        .instance_methods
-        .select { |m| m[/.+_batch_action$/] }
-        .each do |method_name|
-          resource = controller.name.demodulize.underscore.delete_suffix('_controller')
+  #   ::Administrate::ApplicationController.descendants
+  # end
 
-          resources resource.to_sym do
-            post method_name.to_sym,
-              on: :collection,
-              controller: controller.name.underscore.delete_suffix('_controller')
-          end
-      end
-    end
-  end
+  # namespace :admin do
+  #   controllers_for(nil).each do |controller|
+  #     controller
+  #       .instance_methods
+  #       .select { |m| m[/.+_batch_action$/] }
+  #       .each do |method_name|
+  #         resource = controller.name.demodulize.underscore.delete_suffix('_controller')
+
+  #         resources resource.to_sym do
+  #           post method_name.to_sym,
+  #             on: :collection,
+  #             controller: controller.name.underscore.delete_suffix('_controller')
+  #         end
+  #     end
+  #   end
+  # end
 end
